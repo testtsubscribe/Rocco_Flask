@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROCCO | {{ content.hero_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">ROCCO</div>
+        <ul class="nav-links">
+            <li><a href="#home">{{ content.nav_home }}</a></li>
+            <li><a href="#products">{{ content.nav_products }}</a></li>
+            <li><a href="#about">{{ content.nav_about }}</a></li>
+            <li><a href="#contact">{{ content.nav_contact }}</a></li>
+        </ul>
+        <div class="lang-switcher">
+            <a href="{{ url_for('set_language', lang='az') }}" class="lang-btn {% if current_lang == 'az' %}active{% endif %}">AZ</a>
+            <a href="{{ url_for('set_language', lang='ru') }}" class="lang-btn {% if current_lang == 'ru' %}active{% endif %}">RU</a>
+            <a href="{{ url_for('set_language', lang='en') }}" class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+        </div>
+    </nav>
+
+    <header id="home" class="hero">
+        <h1>{{ content.hero_title }}</h1>
+        <p>{{ content.hero_subtitle }}</p>
+        <a href="#products" class="btn-primary">{{ content.hero_cta }}</a>
+    </header>
+
+    <section id="products">
+        <h2 class="section-title">{{ content.products_title }}</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <h3>{{ content.disc_1_name }}</h3>
+                <p>{{ content.disc_1_desc }}</p>
+            </div>
+            <div class="product-card">
+                <h3>{{ content.disc_2_name }}</h3>
+                <p>{{ content.disc_2_desc }}</p>
+            </div>
+            <div class="product-card">
+                <h3>ROCCO Premium</h3>
+                <p>{{ content.disc_1_desc }}</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">{{ content.about_title }}</h2>
+        <div class="about-content">
+            <p>{{ content.about_text }}</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">{{ content.contact_title }}</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <div>
+                    <h4>Email</h4>
+                    <p>{{ company.email }}</p>
+                </div>
+                <div>
+                    <h4>Phone</h4>
+                    <p>{{ company.phone }}</p>
+                </div>
+                <div>
+                    <h4>Address</h4>
+                    <p>{{ company.address }}</p>
+                </div>
+                <div>
+                    <h4>Working Hours</h4>
+                    <p>{{ company.working_hours }}</p>
+                </div>
+            </div>
+            <div class="contact-form">
+                <input type="text" placeholder="Name">
+                <input type="email" placeholder="Email">
+                <textarea rows="5" placeholder="Message"></textarea>
+                <button class="btn-primary" style="border: none; cursor: pointer;">{{ content.contact_btn }}</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 ROCCO Corporate. All rights reserved.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 11, 16, 0.98)';
+                nav.style.padding = '1rem 5%';
+            } else {
+                nav.style.background = 'rgba(10, 11, 16, 0.85)';
+                nav.style.padding = '1.5rem 5%';
+            }
+        });
+    </script>
+</body>
+</html>
