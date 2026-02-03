@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROCCO Admin | Dashboard</title>
+    <title>ROCCO Admin | Messages</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -55,16 +55,6 @@
             color: var(--primary-color);
         }
 
-        .action-btns {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn-edit {
-            color: #4dabf7;
-            text-decoration: none;
-        }
-
         .btn-delete {
             color: #ff6b6b;
             text-decoration: none;
@@ -74,11 +64,6 @@
             color: #51cf66;
             margin-bottom: 1rem;
         }
-
-        .flash-error {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 
@@ -86,9 +71,8 @@
     <div class="admin-nav">
         <div class="logo">ROCCO ADMIN</div>
         <div>
-            <a href="{{ url_for('admin_dashboard') }}" style="color: var(--primary-color);">Content</a> |
-            <a href="{{ url_for('admin_messages') }}">Messages</a> |
-            <a href="{{ url_for('index') }}" target="_blank">View Site</a> |
+            <a href="{{ url_for('admin_dashboard') }}">Content</a> |
+            <a href="{{ url_for('admin_messages') }}" style="color: var(--primary-color);">Messages</a> |
             <a href="{{ url_for('admin_logout') }}" style="color: #ff6b6b;">Logout</a>
         </div>
     </div>
@@ -103,66 +87,32 @@
         {% endwith %}
 
         <div class="admin-header">
-            <h2>Website Content</h2>
-            <a href="{{ url_for('admin_add_content') }}" class="btn-primary"
-                style="font-size: 0.9rem; padding: 0.5rem 1rem;">+ Add Content</a>
+            <h2>Contact Messages</h2>
         </div>
 
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Key</th>
-                    <th>Lang</th>
-                    <th>Value</th>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for row in content_items %}
+                {% for msg in messages %}
                 <tr>
-                    <td>{{ row.id }}</td>
-                    <td>{{ row.key }}</td>
-                    <td>{{ row.lang.upper() }}</td>
-                    <td>{{ row.value[:50] }}{% if row.value|length > 50 %}...{% endif %}</td>
-                    <td class="action-btns">
-                        <a href="{{ url_for('admin_edit_content', id=row.id) }}" class="btn-edit">Edit</a>
-                        <a href="{{ url_for('admin_delete_content', id=row.id) }}" class="btn-delete"
-                            onclick="return confirm('Are you sure?')">Delete</a>
+                    <td>{{ msg.timestamp }}</td>
+                    <td>{{ msg.name }}</td>
+                    <td>{{ msg.email }}</td>
+                    <td>{{ msg.message }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_delete_message', id=msg.id) }}" class="btn-delete"
+                            onclick="return confirm('Delete this message?')">Delete</a>
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="admin-header">
-            <h2>Company Information</h2>
-            <a href="{{ url_for('admin_edit_company') }}" class="btn-edit">Edit All Info</a>
-        </div>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Value (AZ / RU / EN)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Phone</td>
-                    <td>{{ company.phone }}</td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td>{{ company.email }}</td>
-                </tr>
-                <tr>
-                    <td>Address AZ</td>
-                    <td>{{ company.address_az }}</td>
-                </tr>
-                <tr>
-                    <td>Working Hours AZ</td>
-                    <td>{{ company.working_hours_az }}</td>
-                </tr>
             </tbody>
         </table>
     </div>
