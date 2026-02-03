@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROCCO Admin | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-nav {
+            background: #15181e;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #252a33;
+        }
+
+        .admin-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .admin-container {
+            padding: 2rem 5%;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #15181e;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid #252a33;
+        }
+
+        .admin-table th {
+            background: #1c2027;
+            color: var(--primary-color);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-edit {
+            color: #4dabf7;
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .flash-success {
+            color: #51cf66;
+            margin-bottom: 1rem;
+        }
+
+        .flash-error {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-nav">
+        <div class="logo">ROCCO ADMIN</div>
+        <div>
+            <a href="{{ url_for('index') }}" target="_blank">View Site</a> |
+            <a href="{{ url_for('admin_logout') }}" style="color: #ff6b6b;">Logout</a>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="admin-header">
+            <h2>Website Content</h2>
+            <a href="{{ url_for('admin_add_content') }}" class="btn-primary"
+                style="font-size: 0.9rem; padding: 0.5rem 1rem;">+ Add Content</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Key</th>
+                    <th>Lang</th>
+                    <th>Value</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in content_items %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.key }}</td>
+                    <td>{{ row.lang.upper() }}</td>
+                    <td>{{ row.value[:50] }}{% if row.value|length > 50 %}...{% endif %}</td>
+                    <td class="action-btns">
+                        <a href="{{ url_for('admin_edit_content', id=row.id) }}" class="btn-edit">Edit</a>
+                        <a href="{{ url_for('admin_delete_content', id=row.id) }}" class="btn-delete"
+                            onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="admin-header">
+            <h2>Company Information</h2>
+            <a href="{{ url_for('admin_edit_company') }}" class="btn-edit">Edit All Info</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Value (AZ / RU / EN)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Phone</td>
+                    <td>{{ company.phone }}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{ company.email }}</td>
+                </tr>
+                <tr>
+                    <td>Address AZ</td>
+                    <td>{{ company.address_az }}</td>
+                </tr>
+                <tr>
+                    <td>Working Hours AZ</td>
+                    <td>{{ company.working_hours_az }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
