@@ -199,7 +199,7 @@ def admin_messages():
     conn = get_db_connection()
     messages = conn.execute('SELECT * FROM contact_messages ORDER BY timestamp DESC').fetchall()
     conn.close()
-    return render_template('admin/messages.html', messages=messages)
+    return render_template('admin/messages.html', messages=messages, now=datetime.now())
 
 @app.route('/admin/messages/delete/<int:id>')
 @login_required

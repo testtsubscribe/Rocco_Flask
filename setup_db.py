@@ -35,6 +35,27 @@ def setup_database():
         )
     ''')
 
+    # Table for admins general info
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS admins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )           
+    ''')
+
+    # Table for contact_messages definition info
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS contact_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp DATETIME DEFAULT (datetime('now', '+4 hours'))
+        )           
+    ''')
+
+
     # Seed Company Info
     cursor.execute('''
         INSERT INTO company_info (phone, email, address_az, address_ru, address_en, working_hours_az, working_hours_ru, working_hours_en)

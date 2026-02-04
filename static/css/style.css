@@ -211,7 +211,8 @@ section {
     gap: 1.5rem;
 }
 
-.contact-form input, .contact-form textarea {
+.contact-form input,
+.contact-form textarea {
     background: var(--card-bg);
     border: 1px solid #252a33;
     padding: 1rem;
@@ -220,7 +221,8 @@ section {
     font-family: inherit;
 }
 
-.contact-form input:focus, .contact-form textarea:focus {
+.contact-form input:focus,
+.contact-form textarea:focus {
     outline: none;
     border-color: var(--primary-color);
 }
@@ -239,9 +241,11 @@ footer {
     .nav-links {
         display: none;
     }
+
     .hero h1 {
         font-size: 2.5rem;
     }
+
     .contact-container {
         grid-template-columns: 1fr;
     }

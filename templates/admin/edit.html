@@ -8,15 +8,60 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --background-light: #f9fafb;
+            --card-bg: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        body {
+            background: var(--background-light);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            margin: 0;
+            min-height: 100vh;
+        }
+
         .admin-container {
-            padding: 5rem 10%;
+            padding: 2rem 5%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .form-card {
-            background: #15181e;
-            padding: 3rem;
+            background: var(--card-bg);
+            padding: 2.5rem;
             border-radius: 12px;
-            border: 1px solid #252a33;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h2 {
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-card h2::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 28px;
+            background: var(--primary-color);
+            border-radius: 3px;
         }
 
         .form-group {
@@ -25,8 +70,10 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.8rem;
-            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .form-group input,
@@ -34,11 +81,195 @@
         .form-group textarea {
             width: 100%;
             padding: 1rem;
-            background: #0a0b10;
-            border: 1px solid #252a33;
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: #9ca3af;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-hint {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .required::after {
+            content: '*';
+            color: var(--error-color);
+            margin-left: 0.25rem;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: #0369a1;
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .current-info {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .current-info strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .lang-option {
+            flex: 1;
+            text-align: center;
+        }
+
+        .lang-option input[type="radio"] {
+            display: none;
+        }
+
+        .lang-option label {
+            display: block;
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .lang-option input[type="radio"]:checked+label {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .lang-option label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .btn-save {
+            background-color: var(--primary-color);
             color: white;
-            border-radius: 5px;
-            font-family: inherit;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-save:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background-color: #f3f4f6;
+            color: var(--text-dark);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1.5rem;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .language-selector {
+                flex-direction: column;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -46,39 +277,123 @@
 <body>
     <div class="admin-container">
         <div class="form-card">
-            <h2 style="margin-bottom: 2rem; color: var(--primary-color);">{{ action }} Content</h2>
+            <h2>{{ action }} Content</h2>
+
+            {% if action == 'Add' %}
+            <div class="info-box">
+                <h3>Add New Content</h3>
+                <p>Create a new content entry for your website. Each key can have translations in different languages.
+                </p>
+            </div>
+            {% else %}
+            <div class="current-info">
+                <p>Editing: <strong>{{ item.key }}</strong> | Language: <strong>{{ item.lang.upper() }}</strong></p>
+                <p class="form-hint">This content will appear on the website in the {{ item.lang.upper() }} version.</p>
+            </div>
+            {% endif %}
+
             <form method="POST">
                 {% if action == 'Add' %}
                 <div class="form-group">
-                    <label>Key (Unique identifier)</label>
-                    <input type="text" name="key" required placeholder="e.g., hero_title">
+                    <label class="required">Content Key</label>
+                    <input type="text" name="key" required placeholder="e.g., hero_title, nav_home, about_text">
+                    <div class="form-hint">Unique identifier (lowercase, use underscores). Examples: hero_title,
+                        nav_products, contact_btn</div>
                 </div>
+
                 <div class="form-group">
-                    <label>Language</label>
-                    <select name="lang">
-                        <option value="az">Azerbaijani</option>
-                        <option value="ru">Russian</option>
-                        <option value="en">English</option>
-                    </select>
+                    <label class="required">Language</label>
+                    <div class="language-selector">
+                        <div class="lang-option">
+                            <input type="radio" id="lang-az" name="lang" value="az" checked>
+                            <label for="lang-az">
+                                <div style="font-size: 0.9rem; margin-bottom: 0.25rem;">🇦🇿</div>
+                                Azerbaijani
+                            </label>
+                        </div>
+                        <div class="lang-option">
+                            <input type="radio" id="lang-ru" name="lang" value="ru">
+                            <label for="lang-ru">
+                                <div style="font-size: 0.9rem; margin-bottom: 0.25rem;">🇷🇺</div>
+                                Russian
+                            </label>
+                        </div>
+                        <div class="lang-option">
+                            <input type="radio" id="lang-en" name="lang" value="en">
+                            <label for="lang-en">
+                                <div style="font-size: 0.9rem; margin-bottom: 0.25rem;">🇬🇧</div>
+                                English
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-hint">Select the language for this content entry</div>
                 </div>
                 {% else %}
-                <div class="form-group">
-                    <label>Key: <strong>{{ item.key }}</strong> | Lang: <strong>{{ item.lang.upper() }}</strong></label>
-                </div>
+                <input type="hidden" name="key" value="{{ item.key }}">
+                <input type="hidden" name="lang" value="{{ item.lang }}">
                 {% endif %}
+
                 <div class="form-group">
-                    <label>Value</label>
-                    <textarea name="value" rows="5" required>{{ item.value if item else '' }}</textarea>
+                    <label class="required">Content Value</label>
+                    <textarea name="value" rows="6" required
+                        placeholder="Enter the text content here...">{{ item.value if item else '' }}</textarea>
+                    <div class="form-hint">This is the actual text that will appear on the website. You can use HTML
+                        tags for formatting if needed.</div>
                 </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button type="submit" class="btn-primary" style="border: none; cursor: pointer;">Save
-                        Changes</button>
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn-primary"
-                        style="background: #252a33; border: none;">Cancel</a>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-save">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                        {{ 'Add Content' if action == 'Add' else 'Save Changes' }}
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-cancel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        // Character counter for textarea
+        const textarea = document.querySelector('textarea[name="value"]');
+        if (textarea) {
+            const counter = document.createElement('div');
+            counter.className = 'form-hint';
+            counter.style.marginTop = '0.5rem';
+            counter.style.textAlign = 'right';
+            textarea.parentNode.insertBefore(counter, textarea.nextSibling);
+
+            function updateCounter() {
+                const length = textarea.value.length;
+                counter.textContent = `${length} characters`;
+
+                if (length > 500) {
+                    counter.style.color = 'var(--warning-color)';
+                } else if (length > 1000) {
+                    counter.style.color = 'var(--error-color)';
+                } else {
+                    counter.style.color = 'var(--text-muted)';
+                }
+            }
+
+            textarea.addEventListener('input', updateCounter);
+            updateCounter();
+        }
+
+        // Auto-focus first input
+        document.querySelector('input[type="text"], textarea').focus();
+    </script>
 </body>
 
 </html>
