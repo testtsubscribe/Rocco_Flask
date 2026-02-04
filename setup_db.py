@@ -121,7 +121,7 @@ def setup_database():
         ('about_title', 'az', 'Şirkət Haqqında'),
         ('about_title', 'ru', 'О компании'),
         ('about_title', 'en', 'About Company'),
-        ('about_text', 'az', 'Sənayedə 15 ildən artıq təcrübəyə malik peşəkar daş kəsmə və cilalama xidmətləri. Biz bütün təbii daş növlərinin dəqiq kəsimi üzrə ixtisaslaşmışıq.'),
+        ('about_text', 'az', 'Sektorda 15 ildən artıq təcrübəyə malik peşəkar daş kəsmə və cilalama xidmətləri. Biz bütün təbii daş növlərinin dəqiq kəsimi üzrə ixtisaslaşmışıq.'),
         ('about_text', 'ru', 'Профессиональные услуги по резке и полировке камня с более чем 15-летним опытом работы в отрасли. Мы специализируемся на точной резке всех видов натурального камня.'),
         ('about_text', 'en', 'Professional stone cutting and polishing services with over 15 years of industry experience. We specialize in precision cutting of all types of natural stone.'),
 
