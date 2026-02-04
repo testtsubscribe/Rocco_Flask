@@ -50,6 +50,7 @@ def setup_database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             email TEXT NOT NULL,
+            phone TEXT,
             message TEXT NOT NULL,
             timestamp DATETIME DEFAULT (datetime('now', '+4 hours'))
         )           

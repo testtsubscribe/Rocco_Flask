@@ -161,6 +161,7 @@ def admin_edit_company():
 def submit_contact():
     name = request.form.get('name')
     email = request.form.get('email')
+    phone = request.form.get('phone')
     message = request.form.get('message')
 
     if not name or not email or not message:
@@ -169,7 +170,7 @@ def submit_contact():
 
     # Store in database
     conn = get_db_connection()
-    conn.execute('INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)', (name, email, message))
+    conn.execute('INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)', (name, email, phone, message))
     
     # Get company email to notify
     company = conn.execute('SELECT email FROM company_info LIMIT 1').fetchone()
@@ -179,7 +180,7 @@ def submit_contact():
     # Email notification (Mock or real depends on ENV)
     # If SMTP is configured, this would send an email. For now, we simulation.
     try:
-        msg = MIMEText(f"New message from {name} ({email}):\n\n{message}")
+        msg = MIMEText(f"New message from {name} ({email}, {phone}):\n\n{message}")
         msg['Subject'] = 'New Contact Form Submission'
         msg['From'] = 'no-reply@roccocut.com'
         msg['To'] = company['email']

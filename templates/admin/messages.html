@@ -411,6 +411,7 @@
                     <th>Date & Time</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Phone</th>
                     <th>Message</th>
                     <th>Actions</th>
                 </tr>
@@ -423,6 +424,7 @@
                     <td>
                         <a href="mailto:{{ msg.email }}" class="email-link">{{ msg.email }}</a>
                     </td>
+                    <td>{{ msg.phone or '-' }}</td>
                     <td>
                         <div class="message-preview" data-id="{{ msg.id }}">
                             {{ msg.message[:100] }}{% if msg.message|length > 100 %}...{% endif %}
@@ -466,6 +468,7 @@
             <div class="message-meta">
                 <div><strong>From:</strong> <span id="modalName"></span></div>
                 <div><strong>Email:</strong> <a id="modalEmail" href="#" class="email-link"></a></div>
+                <div><strong>Phone:</strong> <span id="modalPhone"></span></div>
                 <div><strong>Date:</strong> <span id="modalDate"></span></div>
             </div>
             <button class="btn-close" onclick="closeModal()">Close</button>
@@ -479,6 +482,7 @@
                 const row = this.closest('tr');
                 const name = row.querySelector('td:nth-child(2) strong').textContent;
                 const email = row.querySelector('.email-link').textContent;
+                const phone = row.querySelector('td:nth-child(4)').textContent;
                 const date = row.querySelector('.timestamp').textContent;
                 const fullMessage = row.querySelector('.message-preview').textContent;
 
@@ -487,6 +491,7 @@
                 document.getElementById('modalName').textContent = name;
                 document.getElementById('modalEmail').textContent = email;
                 document.getElementById('modalEmail').href = 'mailto:' + email;
+                document.getElementById('modalPhone').textContent = phone;
                 document.getElementById('modalDate').textContent = date;
                 document.getElementById('modalContent').textContent = fullMessage;
 
