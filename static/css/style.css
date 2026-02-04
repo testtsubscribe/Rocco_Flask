@@ -42,6 +42,15 @@ nav {
     font-weight: 800;
     color: var(--primary-color);
     text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-logo {
+    height: 40px;
+    width: auto;
+    border-radius: 4px;
 }
 
 .nav-links {
@@ -214,12 +223,120 @@ section {
 }
 
 /* About Section */
-.about-content {
-    max-width: 800px;
+.about-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+}
+
+.about-main {
+    max-width: 1000px;
     margin: 0 auto;
+}
+
+.about-intro {
     text-align: center;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
+    color: var(--text-light);
+    margin-bottom: 4rem;
+    line-height: 1.8;
+}
+
+.mission-vision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.mission-vision-card {
+    background: linear-gradient(145deg, #1a1e26, #15181e);
+    padding: 3rem;
+    border-radius: 15px;
+    border: 1px solid #252a33;
+    transition: transform var(--transition-speed);
+}
+
+.mission-vision-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(241, 96, 18, 0.3);
+}
+
+.mission-vision-card h3 {
+    color: var(--primary-color);
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.mission-vision-card h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.mission-vision-card p {
     color: var(--text-muted);
+    font-size: 1.05rem;
+}
+
+.why-choose-us {
+    text-align: center;
+}
+
+.section-subtitle {
+    font-size: 2rem;
+    margin-bottom: 3.5rem;
+    color: var(--text-light);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #252a33;
+    text-align: left;
+    transition: all var(--transition-speed);
+}
+
+.feature-card:hover {
+    background: #1a1e26;
+    border-color: var(--primary-color);
+    transform: scale(1.02);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.feature-card h4 {
+    font-size: 1.25rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-light);
+}
+
+.feature-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
 }
 
 /* Contact Section */

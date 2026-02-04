@@ -58,11 +58,14 @@
 <body>
 
     <nav>
-        <div class="logo">ROCCO</div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ROCCO Logo" class="nav-logo">
+            ROCCO
+        </div>
         <ul class="nav-links">
             <li><a href="#home">{{ content.nav_home }}</a></li>
-            <li><a href="#products">{{ content.nav_products }}</a></li>
             <li><a href="#about">{{ content.nav_about }}</a></li>
+            <li><a href="#products">{{ content.nav_products }}</a></li>
             <li><a href="#contact">{{ content.nav_contact }}</a></li>
         </ul>
         <div class="lang-switcher">
@@ -80,7 +83,7 @@
         <div class="hero-slide" style="background-image: url('/static/images/hero_bg_2.png');"></div>
         <h1>{{ content.hero_title }}</h1>
         <p>{{ content.hero_subtitle }}</p>
-        <a href="#products" class="btn-primary">{{ content.hero_cta }}</a>
+        <a href="#about" class="btn-primary">{{ content.hero_cta }}</a>
     </header>
 
     <script>
@@ -98,6 +101,62 @@
         });
     </script>
 
+    <section id="about">
+        <h2 class="section-title">{{ content.about_title }}</h2>
+        <div class="about-container">
+            <div class="about-main">
+                <p class="about-intro">{{ content.about_text }}</p>
+
+                <div class="mission-vision-grid">
+                    <div class="mission-vision-card">
+                        <h3>{{ content.mission_title }}</h3>
+                        <p>{{ content.mission_text }}</p>
+                    </div>
+                    <div class="mission-vision-card">
+                        <h3>{{ content.vision_title }}</h3>
+                        <p>{{ content.vision_text }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="why-choose-us">
+                <h3 class="section-subtitle">{{ content.why_choose_title }}</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h4>{{ content.feature_1_title }}</h4>
+                        <p>{{ content.feature_1_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h4>{{ content.feature_2_title }}</h4>
+                        <p>{{ content.feature_2_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h4>{{ content.feature_3_title }}</h4>
+                        <p>{{ content.feature_3_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h4>{{ content.feature_4_title }}</h4>
+                        <p>{{ content.feature_4_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h4>{{ content.feature_5_title }}</h4>
+                        <p>{{ content.feature_5_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">❤️</div>
+                        <h4>{{ content.feature_6_title }}</h4>
+                        <p>{{ content.feature_6_text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="products">
         <h2 class="section-title">{{ content.products_title }}</h2>
         <div class="products-grid">
@@ -113,13 +172,6 @@
                 <h3>ROCCO Premium</h3>
                 <p>{{ content.disc_1_desc }}</p>
             </div>
-        </div>
-    </section>
-
-    <section id="about">
-        <h2 class="section-title">{{ content.about_title }}</h2>
-        <div class="about-content">
-            <p>{{ content.about_text }}</p>
         </div>
     </section>
 
