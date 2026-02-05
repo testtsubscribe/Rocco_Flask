@@ -56,6 +56,16 @@ def setup_database():
         )           
     ''')
 
+    # Table for media files (hero images, catalog)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS media (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT UNIQUE NOT NULL,
+            path TEXT NOT NULL,
+            display_name TEXT NOT NULL
+        )
+    ''')
+
 
     # Seed Company Info
     cursor.execute('''
@@ -198,6 +208,14 @@ def setup_database():
     ]
 
     cursor.executemany('INSERT INTO content (key, lang, value) VALUES (?, ?, ?)', seed_data)
+
+    # Seed Media
+    media_data = [
+        ('hero_bg_1', 'static/images/hero_bg.png', 'Hero Background 1'),
+        ('hero_bg_2', 'static/images/hero_bg_2.png', 'Hero Background 2'),
+        ('catalog_file', 'static/catalog/rocco_catalog.pdf', 'Product Catalog')
+    ]
+    cursor.executemany('INSERT INTO media (key, path, display_name) VALUES (?, ?, ?)', media_data)
 
     conn.commit()
     conn.close()

@@ -79,8 +79,8 @@
     </nav>
 
     <header id="home" class="hero">
-        <div class="hero-slide active" style="background-image: url('/static/images/hero_bg.png');"></div>
-        <div class="hero-slide" style="background-image: url('/static/images/hero_bg_2.png');"></div>
+        <div class="hero-slide active" style="background-image: url('/{{ media.hero_bg_1 }}');"></div>
+        <div class="hero-slide" style="background-image: url('/{{ media.hero_bg_2 }}');"></div>
         <h1>{{ content.hero_title }}</h1>
         <p>{{ content.hero_subtitle }}</p>
         <a href="#about" class="btn-primary">{{ content.hero_cta }}</a>
@@ -175,7 +175,7 @@
         </div>
 
         <div class="catalog-download-container">
-            <a href="{{ url_for('static', filename='catalog/rocco_catalog.pdf') }}" class="download-btn" download>
+            <a href="/{{ media.catalog_file }}" class="download-btn" download>
                 <span class="icon">📄</span> {{ content.download_catalog }}
             </a>
         </div>

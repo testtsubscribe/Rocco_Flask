@@ -1,13 +1,22 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, make_response
 import sqlite3
 import smtplib
+import os
 from email.mime.text import MIMEText
 from datetime import datetime
 from functools import wraps
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'rocco_secret_key_123'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_db_connection():
     conn = sqlite3.connect('website.db')
@@ -27,8 +36,6 @@ def get_content(lang):
     conn = get_db_connection()
     content_rows = conn.execute('SELECT id, key, value FROM content WHERE lang = ?', (lang,)).fetchall()
     company_info = conn.execute('SELECT * FROM company_info LIMIT 1').fetchone()
-    conn.close()
-    
     content_dict = {row['key']: row['value'] for row in content_rows}
     
     # Map language-specific company info
@@ -38,8 +45,13 @@ def get_content(lang):
         'address': company_info[f'address_{lang}'],
         'working_hours': company_info[f'working_hours_{lang}']
     }
+
+    # Fetch media
+    media_rows = conn.execute('SELECT key, path FROM media').fetchall()
+    media_dict = {row['key']: row['path'] for row in media_rows}
+    conn.close()
     
-    return content_dict, info_dict
+    return content_dict, info_dict, media_dict
 
 @app.route('/')
 def index():
@@ -48,9 +60,9 @@ def index():
         session['lang'] = 'az'
     
     lang = session['lang']
-    content, company = get_content(lang)
+    content, company, media = get_content(lang)
     
-    return render_template('index.html', content=content, company=company, current_lang=lang)
+    return render_template('index.html', content=content, company=company, media=media, current_lang=lang)
 
 @app.route('/set_language/<lang>')
 def set_language(lang):
@@ -157,6 +169,47 @@ def admin_edit_company():
     
     conn.close()
     return render_template('admin/edit_company.html', company=company)
+
+@app.route('/admin/media', methods=['GET', 'POST'])
+@login_required
+def admin_media():
+    conn = get_db_connection()
+    media_items = conn.execute('SELECT * FROM media').fetchall()
+    conn.close()
+    return render_template('admin/media.html', media_items=media_items)
+
+@app.route('/admin/media/update/<int:id>', methods=['POST'])
+@login_required
+def admin_update_media(id):
+    if 'file' not in request.files:
+        flash('No file part', 'error')
+        return redirect(url_for('admin_media'))
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file', 'error')
+        return redirect(url_for('admin_media'))
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        # Add timestamp to avoid collisions
+        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Store relative path for template use
+        db_path = f"static/uploads/{filename}"
+        
+        conn = get_db_connection()
+        conn.execute('UPDATE media SET path = ? WHERE id = ?', (db_path, id))
+        conn.commit()
+        conn.close()
+        
+        flash('Media updated successfully!', 'success')
+        return redirect(url_for('admin_media'))
+    
+    flash('Invalid file type', 'error')
+    return redirect(url_for('admin_media'))
 @app.route('/submit_contact', methods=['POST'])
 def submit_contact():
     name = request.form.get('name')
