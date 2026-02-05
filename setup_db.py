@@ -61,11 +61,11 @@ def setup_database():
     cursor.execute('''
         INSERT INTO company_info (phone, email, address_az, address_ru, address_en, working_hours_az, working_hours_ru, working_hours_en)
         VALUES (
-            '+994 50 123 45 67', 
-            'info@roccocut.com', 
-            'Bakı, Azərbaycan, Nizami küç. 10', 
-            'Баку, Азербайджан, ул. Низами 10', 
-            'Baku, Azerbaijan, Nizami str. 10',
+            '+994 55 212 46 12', 
+            'info@rocco.az', 
+            'Bakı, Azərbaycan, Naxçıvanski küç. 81', 
+            'Баку, Азербайджан, ул. Нахчыванская 81', 
+            'Baku, Azerbaijan, Nakhchivanski str. 81',
             'Bazar ertəsi - Şənbə: 09:00 - 18:00',
             'Понедельник - Суббота: 09:00 - 18:00',
             'Monday - Saturday: 09:00 - 18:00'
