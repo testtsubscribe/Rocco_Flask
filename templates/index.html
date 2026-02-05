@@ -173,6 +173,12 @@
                 <p>{{ content.disc_1_desc }}</p>
             </div>
         </div>
+
+        <div class="catalog-download-container">
+            <a href="{{ url_for('static', filename='catalog/rocco_catalog.pdf') }}" class="download-btn" download>
+                <span class="icon">📄</span> {{ content.download_catalog }}
+            </a>
+        </div>
     </section>
 
     <section id="contact">

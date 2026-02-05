@@ -401,3 +401,34 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Catalog Download */
+.catalog-download-container {
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--text-light);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all var(--transition-speed);
+}
+
+.download-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(241, 96, 18, 0.3);
+}
+
+.download-btn .icon {
+    font-size: 1.4rem;
+}

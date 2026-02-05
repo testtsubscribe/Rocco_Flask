@@ -192,6 +192,9 @@ def setup_database():
         ('contact_btn', 'az', 'Mesaj Göndər'),
         ('contact_btn', 'ru', 'Отправить'),
         ('contact_btn', 'en', 'Send Message'),
+        ('download_catalog', 'az', 'Kataloqu Yüklə'),
+        ('download_catalog', 'ru', 'Скачать каталог'),
+        ('download_catalog', 'en', 'Download Catalog'),
     ]
 
     cursor.executemany('INSERT INTO content (key, lang, value) VALUES (?, ?, ?)', seed_data)
