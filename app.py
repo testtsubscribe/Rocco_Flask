@@ -1,9 +1,22 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash, make_response
 import sqlite3
+import smtplib
+import os
+from email.mime.text import MIMEText
+from datetime import datetime
 from functools import wraps
+from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'rocco_secret_key_123'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_db_connection():
     conn = sqlite3.connect('website.db')
@@ -23,8 +36,6 @@ def get_content(lang):
     conn = get_db_connection()
     content_rows = conn.execute('SELECT id, key, value FROM content WHERE lang = ?', (lang,)).fetchall()
     company_info = conn.execute('SELECT * FROM company_info LIMIT 1').fetchone()
-    conn.close()
-    
     content_dict = {row['key']: row['value'] for row in content_rows}
     
     # Map language-specific company info
@@ -34,8 +45,13 @@ def get_content(lang):
         'address': company_info[f'address_{lang}'],
         'working_hours': company_info[f'working_hours_{lang}']
     }
+
+    # Fetch media
+    media_rows = conn.execute('SELECT key, path FROM media').fetchall()
+    media_dict = {row['key']: row['path'] for row in media_rows}
+    conn.close()
     
-    return content_dict, info_dict
+    return content_dict, info_dict, media_dict
 
 @app.route('/')
 def index():
@@ -44,9 +60,9 @@ def index():
         session['lang'] = 'az'
     
     lang = session['lang']
-    content, company = get_content(lang)
+    content, company, media = get_content(lang)
     
-    return render_template('index.html', content=content, company=company, current_lang=lang)
+    return render_template('index.html', content=content, company=company, media=media, current_lang=lang)
 
 @app.route('/set_language/<lang>')
 def set_language(lang):
@@ -61,8 +77,14 @@ def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == 'admin' and password == 'admin123':
+        
+        conn = get_db_connection()
+        admin = conn.execute('SELECT * FROM admins WHERE username = ?', (username,)).fetchone()
+        conn.close()
+
+        if admin and check_password_hash(admin['password'], password):
             session['admin_logged_in'] = True
+            session['admin_user'] = username
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Invalid credentials!', 'error')
@@ -147,6 +169,120 @@ def admin_edit_company():
     
     conn.close()
     return render_template('admin/edit_company.html', company=company)
+
+@app.route('/admin/media', methods=['GET', 'POST'])
+@login_required
+def admin_media():
+    conn = get_db_connection()
+    media_items = conn.execute('SELECT * FROM media').fetchall()
+    conn.close()
+    return render_template('admin/media.html', media_items=media_items)
+
+@app.route('/admin/media/update/<int:id>', methods=['POST'])
+@login_required
+def admin_update_media(id):
+    if 'file' not in request.files:
+        flash('No file part', 'error')
+        return redirect(url_for('admin_media'))
+    
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file', 'error')
+        return redirect(url_for('admin_media'))
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        # Add timestamp to avoid collisions
+        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Store relative path for template use
+        db_path = f"static/uploads/{filename}"
+        
+        conn = get_db_connection()
+        conn.execute('UPDATE media SET path = ? WHERE id = ?', (db_path, id))
+        conn.commit()
+        conn.close()
+        
+        flash('Media updated successfully!', 'success')
+        return redirect(url_for('admin_media'))
+    
+    flash('Invalid file type', 'error')
+    return redirect(url_for('admin_media'))
+@app.route('/submit_contact', methods=['POST'])
+def submit_contact():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    message = request.form.get('message')
+
+    if not name or not email or not message:
+        flash('Please fill all fields.', 'error')
+        return redirect(url_for('index', _anchor='contact'))
+
+    # Store in database
+    conn = get_db_connection()
+    conn.execute('INSERT INTO contact_messages (name, email, phone, message) VALUES (?, ?, ?, ?)', (name, email, phone, message))
+    
+    # Get company email to notify
+    company = conn.execute('SELECT email FROM company_info LIMIT 1').fetchone()
+    conn.commit()
+    conn.close()
+
+    # Email notification (Mock or real depends on ENV)
+    # If SMTP is configured, this would send an email. For now, we simulation.
+    try:
+        msg = MIMEText(f"New message from {name} ({email}, {phone}):\n\n{message}")
+        msg['Subject'] = 'New Contact Form Submission'
+        msg['From'] = 'no-reply@roccocut.com'
+        msg['To'] = company['email']
+        
+        # print(f"SENDING EMAIL TO {company['email']}...") 
+        # with smtplib.SMTP('localhost') as s:
+        #     s.send_message(msg)
+    except Exception as e:
+        print(f"Email error: {e}")
+
+    flash('Your message has been sent successfully!', 'success')
+    return redirect(url_for('index', _anchor='contact'))
+
+@app.route('/admin/messages')
+@login_required
+def admin_messages():
+    conn = get_db_connection()
+    messages = conn.execute('SELECT * FROM contact_messages ORDER BY timestamp DESC').fetchall()
+    conn.close()
+    return render_template('admin/messages.html', messages=messages, now=datetime.now())
+
+@app.route('/admin/messages/delete/<int:id>')
+@login_required
+def admin_delete_message(id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM contact_messages WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('Message deleted!', 'success')
+    return redirect(url_for('admin_messages'))
+
+@app.route('/robots.txt')
+def robots():
+    content = "User-agent: *\nAllow: /\nSitemap: " + request.url_root + "sitemap.xml"
+    response = make_response(content)
+    response.headers["Content-Type"] = "text/plain"
+    return response
+
+@app.route('/sitemap.xml')
+def sitemap():
+    pages = []
+    # Main page with localized versions
+    for lang in ['az', 'ru', 'en']:
+        pages.append([request.url_root, datetime.now().strftime('%Y-%m-%d')])
+    
+    xml_content = render_template('sitemap.xml', pages=pages)
+    response = make_response(xml_content)
+    response.headers["Content-Type"] = "application/xml"
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
