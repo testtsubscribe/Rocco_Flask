@@ -1,36 +1,161 @@
 <!DOCTYPE html>
 <html lang="{{ current_lang }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROCCO | {{ content.hero_title }}</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{{ content.meta_description }}">
+    <meta name="keywords" content="{{ content.meta_keywords }}">
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="ROCCO | {{ content.hero_title }}">
+    <meta property="og:description" content="{{ content.meta_description }}">
+    <meta property="og:image" content="{{ request.url_root }}static/images/hero_bg.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="ROCCO | {{ content.hero_title }}">
+    <meta property="twitter:description" content="{{ content.meta_description }}">
+    <meta property="twitter:image" content="{{ request.url_root }}static/images/hero_bg.png">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Corporation",
+      "name": "ROCCO",
+      "url": "{{ request.url_root }}",
+      "logo": "{{ request.url_root }}static/images/hero_bg.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "{{ company.phone }}",
+        "contactType": "customer service",
+        "email": "{{ company.email }}"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ company.address }}",
+        "addressLocality": "Baku",
+        "addressCountry": "AZ"
+      }
+    }
+    </script>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <nav>
-        <div class="logo">ROCCO</div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ROCCO Logo" class="nav-logo">
+            ROCCO
+        </div>
         <ul class="nav-links">
             <li><a href="#home">{{ content.nav_home }}</a></li>
-            <li><a href="#products">{{ content.nav_products }}</a></li>
             <li><a href="#about">{{ content.nav_about }}</a></li>
+            <li><a href="#products">{{ content.nav_products }}</a></li>
             <li><a href="#contact">{{ content.nav_contact }}</a></li>
         </ul>
         <div class="lang-switcher">
-            <a href="{{ url_for('set_language', lang='az') }}" class="lang-btn {% if current_lang == 'az' %}active{% endif %}">AZ</a>
-            <a href="{{ url_for('set_language', lang='ru') }}" class="lang-btn {% if current_lang == 'ru' %}active{% endif %}">RU</a>
-            <a href="{{ url_for('set_language', lang='en') }}" class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+            <a href="{{ url_for('set_language', lang='az') }}"
+                class="lang-btn {% if current_lang == 'az' %}active{% endif %}">AZ</a>
+            <a href="{{ url_for('set_language', lang='ru') }}"
+                class="lang-btn {% if current_lang == 'ru' %}active{% endif %}">RU</a>
+            <a href="{{ url_for('set_language', lang='en') }}"
+                class="lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
         </div>
     </nav>
 
     <header id="home" class="hero">
+        <div class="hero-slide active" style="background-image: url('/static/images/hero_bg.png');"></div>
+        <div class="hero-slide" style="background-image: url('/static/images/hero_bg_2.png');"></div>
         <h1>{{ content.hero_title }}</h1>
         <p>{{ content.hero_subtitle }}</p>
-        <a href="#products" class="btn-primary">{{ content.hero_cta }}</a>
+        <a href="#about" class="btn-primary">{{ content.hero_cta }}</a>
     </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slides = document.querySelectorAll('.hero-slide');
+            let currentSlide = 0;
+
+            function nextSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+
+            setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        });
+    </script>
+
+    <section id="about">
+        <h2 class="section-title">{{ content.about_title }}</h2>
+        <div class="about-container">
+            <div class="about-main">
+                <p class="about-intro">{{ content.about_text }}</p>
+
+                <div class="mission-vision-grid">
+                    <div class="mission-vision-card">
+                        <h3>{{ content.mission_title }}</h3>
+                        <p>{{ content.mission_text }}</p>
+                    </div>
+                    <div class="mission-vision-card">
+                        <h3>{{ content.vision_title }}</h3>
+                        <p>{{ content.vision_text }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="why-choose-us">
+                <h3 class="section-subtitle">{{ content.why_choose_title }}</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h4>{{ content.feature_1_title }}</h4>
+                        <p>{{ content.feature_1_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h4>{{ content.feature_2_title }}</h4>
+                        <p>{{ content.feature_2_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h4>{{ content.feature_3_title }}</h4>
+                        <p>{{ content.feature_3_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h4>{{ content.feature_4_title }}</h4>
+                        <p>{{ content.feature_4_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h4>{{ content.feature_5_title }}</h4>
+                        <p>{{ content.feature_5_text }}</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">❤️</div>
+                        <h4>{{ content.feature_6_title }}</h4>
+                        <p>{{ content.feature_6_text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section id="products">
         <h2 class="section-title">{{ content.products_title }}</h2>
@@ -50,15 +175,17 @@
         </div>
     </section>
 
-    <section id="about">
-        <h2 class="section-title">{{ content.about_title }}</h2>
-        <div class="about-content">
-            <p>{{ content.about_text }}</p>
-        </div>
-    </section>
-
     <section id="contact">
         <h2 class="section-title">{{ content.contact_title }}</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-{{ category }}" style="text-align: center; margin-bottom: 2rem;">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
         <div class="contact-container">
             <div class="contact-info">
                 <div>
@@ -78,12 +205,14 @@
                     <p>{{ company.working_hours }}</p>
                 </div>
             </div>
-            <div class="contact-form">
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <textarea rows="5" placeholder="Message"></textarea>
-                <button class="btn-primary" style="border: none; cursor: pointer;">{{ content.contact_btn }}</button>
-            </div>
+            <form action="{{ url_for('submit_contact') }}" method="POST" class="contact-form">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="tel" name="phone" placeholder="Phone">
+                <textarea name="message" rows="5" placeholder="Message" required></textarea>
+                <button type="submit" class="btn-primary" style="border: none; cursor: pointer;">{{ content.contact_btn
+                    }}</button>
+            </form>
         </div>
     </section>
 
@@ -104,4 +233,5 @@
         });
     </script>
 </body>
+
 </html>
